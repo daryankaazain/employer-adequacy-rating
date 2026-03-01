@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методология рейтинга корпоративной адекватности — 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #00FF41;
+            --border-color: #333333;
+            --font-sans: 'Inter', sans-serif;
+            --card-bg: #050505;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Nav */
+        nav {
+            padding: 40px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "";
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 120px 0 100px;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 40px;
+            right: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-color), transparent);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 5vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin: 0 0 32px 0;
+            letter-spacing: -0.03em;
+            max-width: 1000px;
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: var(--text-muted);
+            font-weight: 400;
+            margin: 0;
+            max-width: 800px;
+            line-height: 1.4;
+        }
+
+        /* Table */
+        .methodology {
+            padding: 100px 0;
+        }
+
+        .section-intro {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-intro::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .criterion {
+            margin-bottom: 60px;
+        }
+
+        .criterion-header {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .criterion-number {
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 1.2rem;
+            font-family: monospace;
+        }
+
+        .criterion-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1px;
+            background-color: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .point-card {
+            background-color: var(--card-bg);
+            padding: 40px 32px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Interactive glow effect */
+        .point-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+                    rgba(0, 255, 65, 0.08),
+                    transparent 40%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .point-card:hover::before {
+            opacity: 1;
+        }
+
+        .point-card:hover {
+            background-color: #0a0a0a;
+        }
+
+        .point-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .point-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--border-color);
+            margin-bottom: 24px;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+
+        .point-card:hover .point-score {
+            color: var(--accent);
+            -webkit-text-stroke: 0px transparent;
+        }
+
+        .point-text {
+            font-size: 1rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .point-card:hover .point-text {
+            color: var(--text-main);
+        }
+
+        /* Principles */
+        .principles {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .principles::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 40px;
+            right: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-color), transparent);
+        }
+
+        .principles-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+        }
+
+        .principles-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .principles-text {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #555555;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .footer-link {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        .footer-link::after {
+            content: "↗";
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-5 {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .principles-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .grid-5 {
+                grid-template-columns: 1fr;
+            }
+
+            .point-card {
+                padding: 32px 24px;
+            }
+
+            .point-score {
+                font-size: 2.5rem;
+                margin-bottom: 16px;
+            }
+
+            .criterion-title {
+                font-size: 1.5rem;
+            }
+
+            .principles {
+                padding: 60px 0;
+            }
+
+            .principles-title {
+                font-size: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 24px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <a href="#" class="logo">РЕЙТИНГ 2026</a>
+        </nav>
+
+        <header class="hero">
+            <h1>Методология рейтинга корпоративной адекватности — 2026</h1>
+            <p>Полная шкала начисления баллов и технические параметры исследования</p>
+        </header>
+
+        <section class="methodology">
+            <div class="section-intro">
+                При составлении рейтинга использовались пять групп критериев. Ниже представлены четыре основных индекса
+                адекватности.
+            </div>
+
+            <!-- Criterion 1 -->
+            <div class="criterion">
+                <div class="criterion-header">
+                    <span class="criterion-number">01</span>
+                    <h2 class="criterion-title">Прозрачность компании, четкость требований</h2>
+                </div>
+                <div class="grid-5">
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">1</div>
+                            <div class="point-text">Зарплата скрыта («по договоренности»), график размыт
+                                («ненормированный», «быть на связи»), этапы отбора не описаны.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">2</div>
+                            <div class="point-text">Зарплата скрыта, но график и задачи описаны четко.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">3</div>
+                            <div class="point-text">Есть «вилка» зарплаты (хотя бы показатель «от»), но нет деталей про
+                                оформление или этапы собеседования.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">4</div>
+                            <div class="point-text">Есть обозначение зарплаты и графика, но присутствуют и размытые
+                                формулировки про переработки.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">5</div>
+                            <div class="point-text">Полная прозрачность: «вилка» зарплаты «от и до», четкий график
+                                (например, 5/2 гибрид), расписаны этапы (тестовое &rarr; HR &rarr; технический/финальный
+                                собес).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criterion 2 -->
+            <div class="criterion">
+                <div class="criterion-header">
+                    <span class="criterion-number">02</span>
+                    <h2 class="criterion-title">Индекс заботы о сотрудниках, привлекательность условий</h2>
+                </div>
+                <div class="grid-5">
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">1</div>
+                            <div class="point-text">В дополнительных предложениях указаны только базовые требования по
+                                ТК РФ (отпуск, «белая» ЗП) или небольшие офисные преимущества (чай/кофе, вид из окна на
+                                Москва-реку).</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">2</div>
+                            <div class="point-text">Описанное выше в пункте на 1 балл + небольшие корпоративные скидки с
+                                соответствующим потенциалом реализации.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">3</div>
+                            <div class="point-text">Помимо «базового» набора — ДМС после испытательного срока, скидки на
+                                продукты компании, корпоративы.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">4</div>
+                            <div class="point-text">Хороший уровень — ДМС сразу после выхода на работу, частичное
+                                предоставление питания или спортивной деятельности, гибридный график (этот график мы
+                                определяем как один из наиболее привлекательных для поколения Z — так, по статистике
+                                Forbes, 31% опрошенной молодежи выбирает гибридный график).</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">5</div>
+                            <div class="point-text">Высший уровень заботы: ДМС с включенной стоматологией, корпоративный
+                                психолог с первого рабочего дня, бюджет на внешнее обучение, полная удаленка (как один
+                                из вариантов графика).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criterion 3 -->
+            <div class="criterion">
+                <div class="criterion-header">
+                    <span class="criterion-number">03</span>
+                    <h2 class="criterion-title">Индекс канцелярита и отпугивающей официальности</h2>
+                </div>
+                <div class="grid-5">
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">1</div>
+                            <div class="point-text">Текст больше чем на 80% состоит из канцелярских штампов («динамично
+                                развиваемся», «стрессоустойчивость», «амбициозные цели») — в эпоху информационного шума
+                                распространенные формулировки теряют смысл и не позволяют соискателю углубиться в
+                                картину мира работодателя.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">2</div>
+                            <div class="point-text">Штампов много, но они тем не менее раскрывают суть задач.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">3</div>
+                            <div class="point-text">Официальный текст вакансии, не производящий ни положительное, ни
+                                отрицательное впечатление.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">4</div>
+                            <div class="point-text">Живой текст с незначительным количеством корпоративных клише
+                                («дружный коллектив», «мы тут семья»).</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">5</div>
+                            <div class="point-text">Легкий, живой и эмоциональный текст, полноценно знакомящий с
+                                вакансией и несущий пользу для кандидата.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criterion 4 -->
+            <div class="criterion">
+                <div class="criterion-header">
+                    <span class="criterion-number">04</span>
+                    <h2 class="criterion-title">Tone of Voice</h2>
+                </div>
+                <div class="grid-5">
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">1</div>
+                            <div class="point-text">Принуждающие, строгие, не оставляющие свободы формулировки, которые
+                                создают впечатление выстроенной иерархии, где молодой соискатель занимает самую низшую
+                                ступень.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">2</div>
+                            <div class="point-text">Холодный, требовательный тон, который рождает ощущение, что
+                                соискателю делают одолжение.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">3</div>
+                            <div class="point-text">Роботизированный тон, стирающий индивидуальность соискателя и
+                                работодателя «Компания предлагает.. Кандидат должен...».</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">4</div>
+                            <div class="point-text">Дружелюбный тон, сохраняющий дистанцию. Вежливо, корректно.</div>
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-content">
+                            <div class="point-score">5</div>
+                            <div class="point-text">Партнерский, уважительный подход с дружелюбными формулировками «Мы
+                                ищем коллегу», «Давай делать круто вместе», юмор, ощущение равенства.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="principles">
+            <div class="principles-content">
+                <h2 class="principles-title">Параметры<br>выборки</h2>
+                <p class="principles-text">База исследования — список лидеров hh.ru 2025 в категории "Крупнейшие
+                    компании". Мы проанализировали репрезентативную выборку вакансий коммуникационного профиля (PR,
+                    Marketing, SMM) в период с 26 февраля по 1 марта 2026 года. В случае отсутствия активных вакансий
+                    нужного направления у лидера рейтинга, его место занимал следующий по списку номинант (с 9-й позиции
+                    и далее). Такой подход позволил сравнить реальные предложения гигантов рынка в равных условиях.</p>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-team">Комната 4, 2026 год</div>
+                <a href="https://docs.google.com/document/d/1I_w5zA4gOSotWaoqnWuzUtC0b6ZAeSwaH6r3P8jttyA"
+                    class="footer-link">Основной материал исследования</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('.point-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+
+</html>
